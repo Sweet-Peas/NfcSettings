@@ -62,8 +62,8 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.92248064" vertical-offset="5826" max-vertical-offset="7410">
-              <caret line="475" column="41" selection-start-line="475" selection-start-column="41" selection-end-line="475" selection-end-column="41" />
+            <state vertical-scroll-proportion="0.47803617" vertical-offset="1610" max-vertical-offset="7470">
+              <caret line="169" column="65" selection-start-line="169" selection-start-column="65" selection-end-line="169" selection-end-column="65" />
               <folding />
             </state>
           </provider>
@@ -652,8 +652,8 @@
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/HandleTag.java" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/MyAlertDialog.java" />
         <option value="$PROJECT_DIR$/Application/src/main/res/layout/sample_main.xml" />
-        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/MainActivity.java" />
         <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/EspUserData.java" />
+        <option value="$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -1392,8 +1392,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/src/main/java/com/example/android/actionbarcompat/basic/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.92248064" vertical-offset="5826" max-vertical-offset="7410">
-          <caret line="475" column="41" selection-start-line="475" selection-start-column="41" selection-end-line="475" selection-end-column="41" />
+        <state vertical-scroll-proportion="0.47803617" vertical-offset="1610" max-vertical-offset="7470">
+          <caret line="169" column="65" selection-start-line="169" selection-start-column="65" selection-end-line="169" selection-end-column="65" />
           <folding />
         </state>
       </provider>

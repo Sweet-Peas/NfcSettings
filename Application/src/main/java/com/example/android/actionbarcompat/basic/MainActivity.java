@@ -156,7 +156,6 @@ public class MainActivity extends ActionBarActivity {
                 // Always fall back to read mode, even if we fail
                 Operation = OP_READ;
                 if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-                    byte[] payload= eud.getInitialData();
                     NdefRecord nr = NdefRecord.createExternal(
                             new String("com.example.android.actionbarcompat.basic"),
                             new String("externaltype"), payload);
@@ -169,15 +168,20 @@ public class MainActivity extends ActionBarActivity {
                         ndef.connect();
                     } catch (Exception e) {
                         Log.e(TAG, "Could not connect to tag !");
+                        Toast.makeText(this, "Failed to connect to tag !", Toast.LENGTH_LONG).show();
+                        return;
                     }
 
                     Log.d(TAG, "Attempting to write data to tag !");
                     try {
                         ndef.writeNdefMessage(msg);
                         Log.i(TAG, "Succeeded to write to tag !");
+                        Toast.makeText(this, "Succeeded to write new data to tag !", Toast.LENGTH_LONG).show();
+                        return;
                     } catch (Exception e) {
                         Log.e(TAG, "Error while trying to write an NDEF message: " +
                                 e.toString());
+                        Toast.makeText(this, "Error while trying to write to tag !", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Log.e(TAG, "Not an NDEF tag");
