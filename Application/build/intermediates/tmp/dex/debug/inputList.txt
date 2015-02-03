@@ -1,0 +1,7 @@
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/classes/debug
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-c2d53b1c76bc91ae1310e572c1fd5048b08afbe6.jar
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/pre-dexed/debug/classes-22fc4b8b7c206566b57ef5450d6fb4ed67ca4247.jar
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/pre-dexed/debug/classes-81e1f09aebc3a82d217d74539d778270d5760203.jar
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-9ed7b538f1c62e6106ee99338c5858b466f7cf6e.jar
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/pre-dexed/debug/classes-670af9fbe200005fbf17658af01998de0da71590.jar
+/home/pontus/AndroidStudioProjects/NfcTest/Application/build/intermediates/pre-dexed/debug/classes-11ad7e665ca84eeb6d66ca540bf87b5fa0b5fd6b.jar
