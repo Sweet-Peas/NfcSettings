@@ -1,4 +1,4 @@
-package com.example.android.actionbarcompat.basic;
+package se.sweetpeas.android.nfcsettings;
 
 import java.util.Arrays;
 
@@ -11,7 +11,7 @@ public class EspUserData {
     private byte[] streamArray = new byte[2048];    // Max 2048 bytes in one stream
     private String[] supportedDevices = {
             "Unknown",
-            "UnoNet",
+            "UnoNet+",
             "LeoFi+"
     };
 

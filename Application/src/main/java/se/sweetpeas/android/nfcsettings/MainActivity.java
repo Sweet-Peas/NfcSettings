@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.actionbarcompat.basic;
+package se.sweetpeas.android.nfcsettings;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -53,7 +53,6 @@ public class MainActivity extends ActionBarActivity {
     private static final int OP_READ = 1;
     private static final int OP_WRITE = 2;
 
-    public static final String MIME_TEXT_PLAIN = "text/plain";
     public static final String TAG = "NfcDemo.MainActivity";
 
     private int Operation = OP_READ;
@@ -157,7 +156,7 @@ public class MainActivity extends ActionBarActivity {
                 Operation = OP_READ;
                 if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
                     NdefRecord nr = NdefRecord.createExternal(
-                            new String("com.example.android.actionbarcompat.basic"),
+                            new String("se.sweetpeas.android.nfcsettings"),
                             new String("externaltype"), payload);
                     NdefMessage msg = new NdefMessage(new NdefRecord[] {nr});
 
@@ -209,7 +208,7 @@ public class MainActivity extends ActionBarActivity {
         filters[0].addCategory(Intent.CATEGORY_DEFAULT);
         try {
             filters[0].addDataScheme("vnd.android.nfc");
-            filters[0].addDataPath("/com.example.android.actionbarcompat.basic:externaltype",
+            filters[0].addDataPath("/se.sweetpeas.android.nfcsettings:externaltype",
                     PatternMatcher.PATTERN_LITERAL);
         } catch (Exception e) {
             Log.e(TAG, "Error occurred: " + e.toString());

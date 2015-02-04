@@ -1,4 +1,4 @@
-package com.example.android.actionbarcompat.basic;
+package se.sweetpeas.android.nfcsettings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -130,7 +130,7 @@ public class HandleTag extends Activity {
                 // Write a demo record to the tag
                 byte[] payload= eud.getInitialData();
                 NdefRecord nr = NdefRecord.createExternal(
-                        new String("com.example.android.actionbarcompat.basic"),
+                        new String("se.sweetpeas.android.nfcsettings"),
                         new String("externaltype"), payload);
                 NdefMessage msg = new NdefMessage(new NdefRecord[] {nr});
 

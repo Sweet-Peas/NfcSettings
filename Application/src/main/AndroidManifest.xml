@@ -16,9 +16,9 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.actionbarcompat.basic"
+    package="se.sweetpeas.android.nfcsettings"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="1.1">
 
     <!-- ActionBarCompat provides an Action Bar from API v7 onwards -->
     <!-- Min/target SDK versions (<uses-sdk>) managed by build.gradle -->
@@ -41,7 +41,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
                     android:host="ext"
-                    android:pathPrefix="/com.example.android.actionbarcompat.basic:externaltype"
+                    android:pathPrefix="/se.sweetpeas.android.nfcsettings:externaltype"
                     android:scheme="vnd.android.nfc" />
             </intent-filter>
         </activity>
