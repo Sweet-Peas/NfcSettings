@@ -33,13 +33,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 
 /**
  * This sample shows you how to use ActionBarCompat to create a basic Activity which displays
@@ -57,13 +52,15 @@ public class MainActivity extends ActionBarActivity {
 
     private int Operation = OP_READ;
 
+    private boolean actionMenuEnabled = false;
+
     private NfcAdapter nfca;
 
     private FrameLayout curLayout = null;
 
     byte[] payload;
 
-    EspUserData eud= new EspUserData();
+    EspUserData eud = new EspUserData();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,22 +115,26 @@ public class MainActivity extends ActionBarActivity {
          *
          * In our case this method gets called, when the user attaches a Tag to the device.
          */
-        Log.d(TAG, "Got to onNewIntent !");
+        Log.d(TAG, "Got onNewIntent !");
         handleIntent(intent);
     }
 
+    /*
+     * This method handles the intent passed to it.
+     * Supports read and write operations.
+     */
     private void handleIntent(Intent intent) {
         String action = intent.getAction();
         switch (Operation) {
             case OP_READ:
                 if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-                    Toast.makeText(this, "NDEF Tag Detected, Operation = " + Operation + " !",
+                    Toast.makeText(this, "NDEF Tag Detected !",
                             Toast.LENGTH_LONG).show();
-
                     String type = intent.getType();
                     Log.d(TAG, "Got mime type: " + type);
                     Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                    new NdefReaderTask().execute(tag);
+                    ReaderData rd = new ReaderData(this, tag);
+                    new NdefReaderTask().execute(rd);
                     setScreen(1);
                 } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
@@ -144,7 +145,8 @@ public class MainActivity extends ActionBarActivity {
 
                     for (String tech : techList) {
                         if (searchedTech.equals(tech)) {
-                            new NdefReaderTask().execute(tag);
+                            ReaderData rd = new ReaderData(this, tag);
+                            new NdefReaderTask().execute(rd);
                             break;
                         }
                     }
@@ -167,7 +169,8 @@ public class MainActivity extends ActionBarActivity {
                         ndef.connect();
                     } catch (Exception e) {
                         Log.e(TAG, "Could not connect to tag !");
-                        Toast.makeText(this, "Failed to connect to tag !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Failed to connect to tag !",
+                                Toast.LENGTH_LONG).show();
                         return;
                     }
 
@@ -175,12 +178,14 @@ public class MainActivity extends ActionBarActivity {
                     try {
                         ndef.writeNdefMessage(msg);
                         Log.i(TAG, "Succeeded to write to tag !");
-                        Toast.makeText(this, "Succeeded to write new data to tag !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Succeeded to write new data to tag !",
+                                Toast.LENGTH_LONG).show();
                         return;
                     } catch (Exception e) {
                         Log.e(TAG, "Error while trying to write an NDEF message: " +
                                 e.toString());
-                        Toast.makeText(this, "Error while trying to write to tag !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Error while trying to write to tag !",
+                                Toast.LENGTH_LONG).show();
                     }
                 } else {
                     Log.e(TAG, "Not an NDEF tag");
@@ -240,96 +245,6 @@ public class MainActivity extends ActionBarActivity {
     }
     // END_INCLUDE(create_menu)
 
-    private byte[] ipToArray(String ipstring) throws ArithmeticException {
-        byte[] ip = new byte[4];
-        String[] parts = ipstring.split("\\.");
-
-        if (parts.length != 4) {
-            throw new ArithmeticException("Not exactly 4 parameters in ip address");
-        }
-
-        for (int i = 0; i < 4; i++) {
-            ip[i] = (byte)Integer.parseInt(parts[i]);
-        }
-
-        return ip;
-    }
-
-    /**
-     * Build the payload that should be written to the NFC tag memory
-     */
-    private void buildPayload() {
-
-        EditText et;
-        CheckBox cb;
-
-        byte[] device;
-        byte[] dhcpEnabled = new byte[1];
-        byte[] ip;
-        byte[] netmask;
-        byte[] gateway;
-        int imPort;     // Intermediate variable
-        byte[] port = new byte[2];
-
-        // Read out values from gui, starting with the system name
-        et = (EditText)findViewById(R.id.espSystemName);
-        device = eud.getDevice(et.getText().toString());
-
-        // DHCP enabled
-        cb = (CheckBox)findViewById(R.id.espEnableDhcp);
-        if (cb.isChecked() == true) {
-            dhcpEnabled[0] = 1;
-        } else {
-            dhcpEnabled[0] = 0;
-        }
-
-        // IP Address
-        et = (EditText)findViewById(R.id.espIpAddress);
-        try {
-            ip = ipToArray(et.getText().toString());
-        } catch (ArithmeticException e) {
-            Log.d(TAG, "Error in IP address, setting it to 0.0.0.0" + e);
-            ip = new byte[4];
-            ip[0] = ip[1] = ip[2] = ip[3] = 0;
-        }
-
-        // Netmask
-        et = (EditText)findViewById(R.id.espNetmask);
-        try {
-            netmask = ipToArray(et.getText().toString());
-        } catch (ArithmeticException e) {
-            Log.d(TAG, "Error in Netmask address, setting it to 0.0.0.0" + e);
-            netmask = new byte[4];
-            netmask[0] = netmask[1] = netmask[2] = netmask[3] = 0;
-        }
-
-        // Default gateway
-        et = (EditText)findViewById(R.id.espGateway);
-        try {
-            gateway = ipToArray(et.getText().toString());
-        } catch (ArithmeticException e) {
-            Log.d(TAG, "Error in Default gateway address, setting it to 0.0.0.0" + e);
-            gateway = new byte[4];
-            gateway[0] = gateway[1] = gateway[2] = gateway[3] = 0;
-        }
-
-        // Webserver port
-        et = (EditText)findViewById(R.id.espWebServerport);
-        imPort = Integer.parseInt(et.getText().toString());
-        port[0] = (byte)(imPort & 255);
-        port[1] = (byte)((imPort / 256) & 255);
-
-        // Create a new payload stream
-        eud.streamCreate();
-        // Write objects to the stream
-        eud.streamData(device);
-        eud.streamData(dhcpEnabled);
-        eud.streamData(ip);
-        eud.streamData(netmask);
-        eud.streamData(gateway);
-        eud.streamData(port);
-    }
-
     // BEGIN_INCLUDE(menu_item_selected)
     /**
      * This method is called when one of the menu items to selected. These items
@@ -338,42 +253,43 @@ public class MainActivity extends ActionBarActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_refresh:
-                Tag tag = getIntent().getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                if (tag == null) {
-                    Log.i(TAG, "Could not find a connected tag !");
+
+        if (actionMenuEnabled == true) {
+            switch (item.getItemId()) {
+                case R.id.menu_refresh:
+                    Tag tag = getIntent().getParcelableExtra(NfcAdapter.EXTRA_TAG);
+                    if (tag == null) {
+                        Log.i(TAG, "Could not find a connected tag !");
+                        return true;
+                    }
+
+                    Ndef ndef = Ndef.get(tag);
+                    if (ndef.isConnected() == true) {
+                        // Here we start a background refresh task
+                        ReaderData rd = new ReaderData(this, tag);
+                        new NdefReaderTask().execute(rd);
+                    }
                     return true;
-                }
 
-                Ndef ndef = Ndef.get(tag);
-                if (ndef.isConnected() == true) {
-                    // Here we might start a background refresh task
-                    new NdefReaderTask().execute(tag);
-                }
-                return true;
+                case R.id.menu_update:
+                    Log.d(TAG, "Selected menu_update");
+                    // Set up a new pending intent to take care of writing a tag
+                    Operation = OP_WRITE;
+                    setupForegroundDispatch(this, nfca);
+                    Toast.makeText(this, "Move the tag into range to write the data !",
+                            Toast.LENGTH_LONG).show();
 
-            case R.id.menu_update:
-                Log.d(TAG, "Selected menu_update");
-                // Set up a new pending intent to take care of writing a tag
-                Operation = OP_WRITE;
-                setupForegroundDispatch(this, nfca);
-                Toast.makeText(this, "Move the tag into range to write the data !", Toast.LENGTH_LONG).show();
+                    // Create the payload for our ndef message
+                    eud.buildPayload(this);
+                    // Get the payload from the created stream.
+                    payload = eud.getStreamArray();
 
-                // Create the payload for our ndef message
-                buildPayload();
-                // Get the payload from the created stream.
-                payload = eud.getStreamArray();
+                    return true;
 
-                Log.d(TAG, "Payload string length = " + payload.length);
-                for (int i=0;i<payload.length;i++) {
-                    Log.d(TAG, "payload[" + i + "] = " + getUnsignedByte(payload[i]));
-                }
-                return true;
-
-            case R.id.menu_settings:
-                /* Here we would open up our settings activity */
-                return true;
+                case R.id.menu_settings:
+                    /* Here we would open up our settings activity */
+                    return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -407,11 +323,13 @@ public class MainActivity extends ActionBarActivity {
             case 0:
                 fl = (FrameLayout)findViewById(R.id.startLayout);
                 fl.setVisibility(View.VISIBLE);
+                actionMenuEnabled = false;
                 break;
 
             case 1:
                 fl = (FrameLayout)findViewById(R.id.dataLayout);
                 fl.setVisibility(View.VISIBLE);
+                actionMenuEnabled = true;
                 break;
 
             default:
@@ -420,22 +338,16 @@ public class MainActivity extends ActionBarActivity {
         curLayout = fl;
     }
 
-    private int getUnsignedByte(byte data) {
-        if (data < 0) {
-            return 256 - Math.abs(data);
-        }
-        return data;
-    }
-
     /**
      * Background task for reading the data. Do not block the UI thread while reading.
      *
      */
-    private class NdefReaderTask extends AsyncTask<Tag, Void, byte[]> {
+    private class NdefReaderTask extends AsyncTask<ReaderData, Void, byte[]> {
 
         @Override
-        protected byte[] doInBackground(Tag... params) {
-            Tag tag = params[0];
+        protected byte[] doInBackground(ReaderData... params) {
+            final Tag tag = params[0].getTag();
+            final Activity activity = params[0].getActivity();
             Ndef ndef;
 
             try {
@@ -462,61 +374,7 @@ public class MainActivity extends ActionBarActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            EditText et;
-
-                            // system name
-                            et = (EditText)findViewById(R.id.espSystemName);
-                            et.setText(eud.getDeviceString(payload[0]));
-
-                            // DHCP Switch
-                            CheckBox cb = (CheckBox)findViewById(R.id.espEnableDhcp);
-                            if (payload[1] != 0) {
-                                cb.setChecked(true);
-                            } else {
-                                cb.setChecked(false);
-                            }
-
-                            // Ip Address
-                            String ip = new String();
-                            ip += Integer.toString(getUnsignedByte(payload[2]));
-                            ip += ".";
-                            ip += Integer.toString(getUnsignedByte(payload[3]));
-                            ip += ".";
-                            ip += Integer.toString(getUnsignedByte(payload[4]));
-                            ip += ".";
-                            ip += Integer.toString(getUnsignedByte(payload[5]));
-                            et = (EditText)findViewById(R.id.espIpAddress);
-                            et.setText(ip);
-
-                            // Netmask Address
-                            String nm = new String();
-                            nm += Integer.toString(getUnsignedByte(payload[6]));
-                            nm += ".";
-                            nm += Integer.toString(getUnsignedByte(payload[7]));
-                            nm += ".";
-                            nm += Integer.toString(getUnsignedByte(payload[8]));
-                            nm += ".";
-                            nm += Integer.toString(getUnsignedByte(payload[9]));
-                            et = (EditText)findViewById(R.id.espNetmask);
-                            et.setText(nm);
-
-                            // Default gateway
-                            String gw = new String();
-                            gw += Integer.toString(getUnsignedByte(payload[10]));
-                            gw += ".";
-                            gw += Integer.toString(getUnsignedByte(payload[11]));
-                            gw += ".";
-                            gw += Integer.toString(getUnsignedByte(payload[12]));
-                            gw += ".";
-                            gw += Integer.toString(getUnsignedByte(payload[13]));
-                            et = (EditText)findViewById(R.id.espGateway);
-                            et.setText(gw);
-
-                            //  Webserver port
-                            int port = getUnsignedByte(payload[14]) |
-                                    getUnsignedByte(payload[15]) * 256;
-                            et = (EditText)findViewById(R.id.espWebServerport);
-                            et.setText(Integer.toString(port));
+                            eud.setPayload(activity, payload);
                         }
                     });
                 }
@@ -528,6 +386,39 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(byte[] payload) {
             Log.d(TAG, "Received tag !");
+        }
+    }
+
+    /*
+     * Support class for the AsyncTask
+     */
+    private class ReaderData {
+        Tag tag;
+        Activity activity;
+
+        public ReaderData(Activity activity) {
+            this.activity = activity;
+        }
+
+        public ReaderData(Activity activity, Tag tag) {
+            this.activity = activity;
+            this.tag = tag;
+        }
+
+        public void setTag(Tag tag) {
+            this.tag = tag;
+        }
+
+        public void setActivity(Activity activity) {
+            this.activity = activity;
+        }
+
+        public Tag getTag() {
+            return this.tag;
+        }
+
+        public Activity getActivity() {
+            return activity;
         }
     }
 }

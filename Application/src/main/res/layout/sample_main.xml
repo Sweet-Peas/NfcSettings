@@ -32,7 +32,7 @@
             android:padding="16dp"
             android:gravity="center"
             android:textSize="@dimen/abc_text_size_title_material"
-            android:text="To view or change settings on your target system please hold your phone close to the NFC antenna."
+            android:text="@string/string_welcome"
             android:textAlignment="center" />
 
     </FrameLayout>
@@ -57,16 +57,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Detected System"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/settings_detected_system"
                 android:id="@+id/textView"
                 android:layout_marginLeft="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="The SweetPea name of the system that was detected"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/settings_detected_system_sub"
                 android:id="@+id/textView2"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp" />
@@ -78,18 +78,19 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp" />
 
-            <TextView
+                <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="DHCP"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/settings_DHCP"
                 android:id="@+id/textView3"
                 android:layout_marginLeft="20dp" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Selecting this switch enables DHCP resolution."
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/settings_DHCP_sub"
                 android:id="@+id/espEnableDhcp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
@@ -98,8 +99,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="IP Address"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/settings_IP_address"
                 android:id="@+id/txtEspIpAddress"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp" />
@@ -114,8 +115,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Netmask"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/settings_Netmask"
                 android:id="@+id/textView5"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp" />
@@ -130,8 +131,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Default Gateway"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/settings_Default_Gateway"
                 android:id="@+id/textView6"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp" />
@@ -146,8 +147,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Webserver Port"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/settings_Webserver_Port"
                 android:id="@+id/textView4"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="20dp" />

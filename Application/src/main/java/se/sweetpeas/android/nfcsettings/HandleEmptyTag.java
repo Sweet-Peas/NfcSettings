@@ -7,15 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
-import android.nfc.tech.NfcF;
 import android.os.Bundle;
-import android.os.PatternMatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,7 +23,7 @@ import android.widget.Toast;
  *
  * Handles detection of tags that are not initialized
  */
-public class HandleTag extends Activity {
+public class HandleEmptyTag extends Activity {
 
     public static final int DIALOG_ICON_WARNING = 1;
     public static final int DIALOG_ICON_INFO = 2;
@@ -128,7 +125,7 @@ public class HandleTag extends Activity {
             Log.d(TAG, "Empty tag detected");
             if (doInitialize == true) {
                 // Write a demo record to the tag
-                byte[] payload= eud.getInitialData();
+                byte[] payload= eud.getInitialPayload();
                 NdefRecord nr = NdefRecord.createExternal(
                         new String("se.sweetpeas.android.nfcsettings"),
                         new String("externaltype"), payload);

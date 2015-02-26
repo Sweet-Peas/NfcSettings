@@ -46,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HandleTag">
+        <activity android:name=".HandleEmptyTag">
             <!-- Intent filter for detecting empty tags -->
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
