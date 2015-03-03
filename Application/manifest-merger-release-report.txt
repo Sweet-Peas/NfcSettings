@@ -61,7 +61,7 @@ ADDED from AndroidManifest.xml:42:17
 		ADDED from AndroidManifest.xml:44:21
 	android:scheme
 		ADDED from AndroidManifest.xml:45:21
-activity#se.sweetpeas.android.nfcsettings.HandleTag
+activity#se.sweetpeas.android.nfcsettings.HandleEmptyTag
 ADDED from AndroidManifest.xml:49:9
 	android:name
 		ADDED from AndroidManifest.xml:49:19

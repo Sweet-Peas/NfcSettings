@@ -29,10 +29,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.NumberKeyListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -304,7 +309,21 @@ public class MainActivity extends ActionBarActivity {
 
         fl = (FrameLayout)findViewById(R.id.dataLayout);
         fl.setVisibility(View.GONE);
+
+        // Connect our new key listener to the address field.
+        EditText edAddress = (EditText) findViewById(R.id.espIpAddress);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
+        edAddress = (EditText) findViewById(R.id.espNetmask);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
+        edAddress = (EditText) findViewById(R.id.espGateway);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
+        edAddress = (EditText) findViewById(R.id.espWebServerport);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
     }
+
     /**
      * Used to change between resident screens.
      *
