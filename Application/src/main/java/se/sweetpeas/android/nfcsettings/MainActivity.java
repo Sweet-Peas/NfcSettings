@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,21 @@ public class MainActivity extends ActionBarActivity {
 
     EspUserData eud = new EspUserData();
 
+    Toast toast = null;
+
+    private void showToast(Activity activity, String message) {
+        if (toast == null || toast.getView().getWindowVisibility() != View.VISIBLE) {
+            toast = Toast.makeText(activity, message, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } else {
+            toast.cancel();
+            toast = Toast.makeText(activity, message, Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,13 +89,13 @@ public class MainActivity extends ActionBarActivity {
 
         if (nfca == null) {
             // Stop here, we definitely need NFC
-            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            showToast(this, "This device doesn't support NFC.");
             finish();
             return;
         }
 
         if (!nfca.isEnabled()) {
-            Toast.makeText(this, "Please note that NFC is disabled.", Toast.LENGTH_LONG).show();
+            showToast(this, "Please note that NFC is disabled.");
         }
 
         handleIntent(getIntent());
@@ -128,8 +144,7 @@ public class MainActivity extends ActionBarActivity {
         switch (Operation) {
             case OP_READ:
                 if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-                    Toast.makeText(this, "NDEF Tag Detected !",
-                            Toast.LENGTH_LONG).show();
+                    showToast(this, "NDEF Tag Detected !");
                     String type = intent.getType();
                     Log.d(TAG, "Got mime type: " + type);
                     Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -171,8 +186,7 @@ public class MainActivity extends ActionBarActivity {
                         ndef.connect();
                     } catch (Exception e) {
                         Log.e(TAG, "Could not connect to tag !");
-                        Toast.makeText(this, "Failed to connect to tag !",
-                                Toast.LENGTH_LONG).show();
+                        showToast(this, "Failed to connect to tag !");
                         return;
                     }
 
@@ -180,14 +194,12 @@ public class MainActivity extends ActionBarActivity {
                     try {
                         ndef.writeNdefMessage(msg);
                         Log.i(TAG, "Succeeded to write to tag !");
-                        Toast.makeText(this, "Succeeded to write new data to tag !",
-                                Toast.LENGTH_LONG).show();
+                        showToast(this, "Succeeded to write new data to tag !");
                         return;
                     } catch (Exception e) {
                         Log.e(TAG, "Error while trying to write an NDEF message: " +
                                 e.toString());
-                        Toast.makeText(this, "Error while trying to write to tag !",
-                                Toast.LENGTH_LONG).show();
+                        showToast(this, "Error while trying to write to tag !");
                     }
                 } else {
                     Log.e(TAG, "Not an NDEF tag");
@@ -283,8 +295,7 @@ public class MainActivity extends ActionBarActivity {
                     // Set up a new pending intent to take care of writing a tag
                     Operation = OP_WRITE;
                     setupForegroundDispatch(this, nfca);
-                    Toast.makeText(this, "Move the tag into range to write the data !",
-                            Toast.LENGTH_LONG).show();
+                    showToast(this, "Move the tag into range to write the data !");
 
                     // Create the payload for our ndef message
                     eud.buildPayload(this);
