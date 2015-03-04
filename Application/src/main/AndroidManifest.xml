@@ -29,7 +29,13 @@
         android:theme="@style/Theme.AppCompat"
         android:allowBackup="true">
 
-        <activity android:name=".MainActivity" android:windowSoftInputMode="adjustResize">
+        <activity
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize">
+
             <!-- Launcher Intent filter -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +52,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".HandleEmptyTag">
+        <activity
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:name=".HandleEmptyTag">
             <!-- Intent filter for detecting empty tags -->
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />

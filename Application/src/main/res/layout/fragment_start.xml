@@ -1,0 +1,16 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="se.sweetpeas.android.nfcsettings.StartFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:gravity="center"
+        android:textSize="@dimen/abc_text_size_title_material"
+        android:text="@string/string_welcome"
+        android:textAlignment="center" />
+
+</FrameLayout>

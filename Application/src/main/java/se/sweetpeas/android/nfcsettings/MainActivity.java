@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -28,6 +29,8 @@ import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PatternMatcher;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -44,7 +47,10 @@ import android.widget.Toast;
  * This Activity extends from {@link ActionBarActivity}, which provides all of the function
  * necessary to display a compatible Action Bar on devices running Android v2.1+.
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity
+        implements
+        UnoNetFragment.OnFragmentInteractionListener,
+        StartFragment.OnFragmentInteractionListener {
 
     private static final int OP_READ = 1;
     private static final int OP_WRITE = 2;
@@ -82,7 +88,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_main);
-        initScreens();
+        StartFragment startFragment = StartFragment.newInstance("", "");
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragmentPlaceholder, startFragment).commit();
 
         Log.d(TAG, "Got to the main activity onCreate !");
         nfca = NfcAdapter.getDefaultAdapter(this);
@@ -97,7 +105,6 @@ public class MainActivity extends ActionBarActivity {
         if (!nfca.isEnabled()) {
             showToast(this, "Please note that NFC is disabled.");
         }
-
         handleIntent(getIntent());
     }
 
@@ -149,8 +156,16 @@ public class MainActivity extends ActionBarActivity {
                     Log.d(TAG, "Got mime type: " + type);
                     Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
                     ReaderData rd = new ReaderData(this, tag);
+                    UnoNetFragment targetFragment = UnoNetFragment.newInstance("", "");
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragmentPlaceholder, targetFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
                     new NdefReaderTask().execute(rd);
-                    setScreen(1);
+                    // eud.screenInit(this);
+
+                    //setScreen(1);
                 } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
                     // In case we would still use the Tech Discovered Intent
@@ -172,10 +187,8 @@ public class MainActivity extends ActionBarActivity {
                 // Always fall back to read mode, even if we fail
                 Operation = OP_READ;
                 if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-/*                    NdefRecord nr = NdefRecord.createExternal(
-                            new String("se.sweetpeas.android.nfcsettings"),
-                            new String("externaltype"), payload);*/
-                    NdefRecord nr = NdefRecord.createExternal("se.sweetpeas.android.nfcsettings",
+                    NdefRecord nr = NdefRecord.createExternal(
+                            "se.sweetpeas.android.nfcsettings",
                             "externaltype", payload);
                     NdefMessage msg = new NdefMessage(new NdefRecord[] {nr});
 
@@ -195,7 +208,6 @@ public class MainActivity extends ActionBarActivity {
                         ndef.writeNdefMessage(msg);
                         Log.i(TAG, "Succeeded to write to tag !");
                         showToast(this, "Succeeded to write new data to tag !");
-                        return;
                     } catch (Exception e) {
                         Log.e(TAG, "Error while trying to write an NDEF message: " +
                                 e.toString());
@@ -313,51 +325,9 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initScreens() {
-        FrameLayout fl;
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-        fl = (FrameLayout)findViewById(R.id.startLayout);
-        fl.setVisibility(View.VISIBLE);
-        curLayout = fl;
-
-        fl = (FrameLayout)findViewById(R.id.dataLayout);
-        fl.setVisibility(View.GONE);
-
-        // Allow the user data class to do local initialization
-        eud.screenInit(this);
-    }
-
-    /**
-     * Used to change between resident screens.
-     *
-     * @param screen - The screen that shall be displayed
-     */
-    private void setScreen(int screen) {
-
-        FrameLayout fl = null;
-
-        if (curLayout != null) {
-            curLayout.setVisibility(View.GONE);
-        }
-
-        switch (screen)
-        {
-            case 0:
-                fl = (FrameLayout)findViewById(R.id.startLayout);
-                fl.setVisibility(View.VISIBLE);
-                actionMenuEnabled = false;
-                break;
-
-            case 1:
-                fl = (FrameLayout)findViewById(R.id.dataLayout);
-                fl.setVisibility(View.VISIBLE);
-                actionMenuEnabled = true;
-                break;
-
-            default:
-                break;
-        }
-        curLayout = fl;
     }
 
     /**
