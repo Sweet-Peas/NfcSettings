@@ -94,7 +94,8 @@
                 android:id="@+id/espEnableDhcp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:checked="false" />
+                android:checked="false"
+                android:onClick="onCheckboxClicked" />
 
             <TextView
                 android:layout_width="wrap_content"

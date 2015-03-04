@@ -29,15 +29,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.support.v7.app.ActionBarActivity;
-import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.method.NumberKeyListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -162,9 +157,11 @@ public class MainActivity extends ActionBarActivity {
                 // Always fall back to read mode, even if we fail
                 Operation = OP_READ;
                 if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-                    NdefRecord nr = NdefRecord.createExternal(
+/*                    NdefRecord nr = NdefRecord.createExternal(
                             new String("se.sweetpeas.android.nfcsettings"),
-                            new String("externaltype"), payload);
+                            new String("externaltype"), payload);*/
+                    NdefRecord nr = NdefRecord.createExternal("se.sweetpeas.android.nfcsettings",
+                            "externaltype", payload);
                     NdefMessage msg = new NdefMessage(new NdefRecord[] {nr});
 
                     Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -250,6 +247,11 @@ public class MainActivity extends ActionBarActivity {
     }
     // END_INCLUDE(create_menu)
 
+    public void onCheckboxClicked(View view) {
+        // Because the target user data class owns the data in the dataLayout
+        eud.onClickEvent(this, view);
+    }
+
     // BEGIN_INCLUDE(menu_item_selected)
     /**
      * This method is called when one of the menu items to selected. These items
@@ -259,7 +261,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (actionMenuEnabled == true) {
+        if (actionMenuEnabled) {
             switch (item.getItemId()) {
                 case R.id.menu_refresh:
                     Tag tag = getIntent().getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -269,7 +271,7 @@ public class MainActivity extends ActionBarActivity {
                     }
 
                     Ndef ndef = Ndef.get(tag);
-                    if (ndef.isConnected() == true) {
+                    if (ndef.isConnected()) {
                         // Here we start a background refresh task
                         ReaderData rd = new ReaderData(this, tag);
                         new NdefReaderTask().execute(rd);
@@ -301,7 +303,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initScreens() {
-        FrameLayout fl = null;
+        FrameLayout fl;
 
         fl = (FrameLayout)findViewById(R.id.startLayout);
         fl.setVisibility(View.VISIBLE);
@@ -310,18 +312,8 @@ public class MainActivity extends ActionBarActivity {
         fl = (FrameLayout)findViewById(R.id.dataLayout);
         fl.setVisibility(View.GONE);
 
-        // Connect our new key listener to the address field.
-        EditText edAddress = (EditText) findViewById(R.id.espIpAddress);
-        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
-
-        edAddress = (EditText) findViewById(R.id.espNetmask);
-        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
-
-        edAddress = (EditText) findViewById(R.id.espGateway);
-        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
-
-        edAddress = (EditText) findViewById(R.id.espWebServerport);
-        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+        // Allow the user data class to do local initialization
+        eud.screenInit(this);
     }
 
     /**
@@ -415,21 +407,9 @@ public class MainActivity extends ActionBarActivity {
         Tag tag;
         Activity activity;
 
-        public ReaderData(Activity activity) {
-            this.activity = activity;
-        }
-
         public ReaderData(Activity activity, Tag tag) {
             this.activity = activity;
             this.tag = tag;
-        }
-
-        public void setTag(Tag tag) {
-            this.tag = tag;
-        }
-
-        public void setActivity(Activity activity) {
-            this.activity = activity;
         }
 
         public Tag getTag() {

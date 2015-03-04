@@ -2,6 +2,7 @@ package se.sweetpeas.android.nfcsettings;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -177,6 +178,37 @@ public class EspUserData {
         streamData(port);
     }
 
+    public void enableDisableAddresses(Activity activity, boolean checked) {
+
+        Log.d(TAG, "Setting setEnabled to " + checked);
+        // Enable or disable text fields accordingly.
+        EditText edAddress = (EditText) activity.findViewById(R.id.espIpAddress);
+        edAddress.setEnabled(checked);
+
+        edAddress = (EditText) activity.findViewById(R.id.espNetmask);
+        edAddress.setEnabled(checked);
+
+        edAddress = (EditText) activity.findViewById(R.id.espGateway);
+        edAddress.setEnabled(checked);
+    }
+
+    /*
+     * It is always our responsibility to handle what happens on the screen, so all onClick events
+     * from the main activity gets routed here.
+     */
+    public void onClickEvent(Activity activity, View view) {
+
+        switch (view.getId()) {
+            case R.id.espEnableDhcp:
+                boolean checked = !((CheckBox) view).isChecked();
+                enableDisableAddresses(activity, checked);
+                break;
+
+            default:
+                Log.d(TAG, "Unhandled view element detected !");
+        }
+    }
+
     public void setPayload(Activity activity, byte[] payload) {
         EditText et;
 
@@ -188,8 +220,10 @@ public class EspUserData {
         CheckBox cb = (CheckBox)activity.findViewById(R.id.espEnableDhcp);
         if (payload[1] != 0) {
             cb.setChecked(true);
+            enableDisableAddresses(activity, false);
         } else {
             cb.setChecked(false);
+            enableDisableAddresses(activity, true);
         }
 
         // Ip Address
@@ -233,5 +267,21 @@ public class EspUserData {
                 getUnsignedByte(payload[15]) * 256;
         et = (EditText)activity.findViewById(R.id.espWebServerport);
         et.setText(Integer.toString(port));
+    }
+
+    public void screenInit(Activity activity) {
+        // Connect our new key listener to the address field.
+        EditText edAddress = (EditText) activity.findViewById(R.id.espIpAddress);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
+        edAddress = (EditText) activity.findViewById(R.id.espNetmask);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
+        edAddress = (EditText) activity.findViewById(R.id.espGateway);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
+        edAddress = (EditText) activity.findViewById(R.id.espWebServerport);
+        edAddress.setKeyListener(IPAddressKeyListener.getInstance());
+
     }
 }
