@@ -17,6 +17,7 @@
 package se.sweetpeas.android.nfcsettings;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -38,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -276,6 +278,18 @@ public class MainActivity extends ActionBarActivity
         eud.onClickEvent(this, view);
     }
 
+    void openAboutDialog() {
+
+        View messageView = getLayoutInflater().inflate(R.layout.about, null, false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.app_name);
+        builder.setView(messageView);
+        builder.create();
+        builder.show();
+
+    }
+
     // BEGIN_INCLUDE(menu_item_selected)
     /**
      * This method is called when one of the menu items to selected. These items
@@ -319,6 +333,26 @@ public class MainActivity extends ActionBarActivity
                 case R.id.menu_settings:
                     /* Here we would open up our settings activity */
                     return true;
+
+                case R.id.menu_about:
+                    // About dialog
+                    openAboutDialog();
+                    return true;
+            }
+        } else {
+            switch (item.getItemId()) {
+                case R.id.menu_settings:
+                    /* Here we would open up our settings activity */
+                    return true;
+
+                case R.id.menu_about:
+                    // About dialog
+                    openAboutDialog();
+                    return true;
+
+                default:
+                    Log.e(TAG, "Invalid itemId detected !");
+                    break;
             }
         }
 
