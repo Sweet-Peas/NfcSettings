@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+import se.sweetpeas.android.nfcsettings.boards.*;
 
 /**
  * Created by 23061151 on 1/12/15.

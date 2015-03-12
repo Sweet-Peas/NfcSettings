@@ -30,7 +30,6 @@ import android.nfc.tech.Ndef;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PatternMatcher;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -39,15 +38,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+import se.sweetpeas.android.nfcsettings.boards.*;
 
 /**
- * This sample shows you how to use ActionBarCompat to create a basic Activity which displays
- * action items. It covers inflating items from a menu resource, as well as adding an item in code.
- *
- * This Activity extends from {@link ActionBarActivity}, which provides all of the function
- * necessary to display a compatible Action Bar on devices running Android v2.1+.
+ * This is the main activity of the app. It extends ActionBarActivity in order to obtain
+ * a useful menu system.
  */
 public class MainActivity extends ActionBarActivity
         implements
@@ -165,9 +161,7 @@ public class MainActivity extends ActionBarActivity
                     transaction.commit();
 
                     new NdefReaderTask().execute(rd);
-                    // eud.screenInit(this);
 
-                    //setScreen(1);
                 } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
                     // In case we would still use the Tech Discovered Intent

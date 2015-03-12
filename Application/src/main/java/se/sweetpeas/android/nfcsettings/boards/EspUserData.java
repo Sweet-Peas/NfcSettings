@@ -1,19 +1,19 @@
-package se.sweetpeas.android.nfcsettings;
+package se.sweetpeas.android.nfcsettings.boards;
 
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-
 import java.util.Arrays;
+import se.sweetpeas.android.nfcsettings.*;
 
 /**
  * This class handles the target application user data
  */
 public class EspUserData {
 
-    private final String TAG ="NfcDemo.EspUserData";
+    private final String TAG = "NfcDemo.EspUserData";
 
     private int wptr = 0;
     private byte[] streamArray = new byte[2048];    // Max 2048 bytes in one stream
@@ -27,9 +27,9 @@ public class EspUserData {
     public byte[] getDevice(String system) {
         byte[] device = new byte[1];
 
-        for(int i=0;i<supportedDevices.length;i++) {
+        for (int i = 0; i < supportedDevices.length; i++) {
             if (supportedDevices[i].equals(system)) {
-                device[0] = (byte)i;
+                device[0] = (byte) i;
                 return device;
             }
         }
@@ -38,17 +38,18 @@ public class EspUserData {
     }
 
     public String getDeviceString(byte device) {
+
         return new String(supportedDevices[device]);
     }
 
     public byte[] getInitialPayload() {
-        return new byte[] {
+        return new byte[]{
                 1,                                  // Sweetpeas product type number
                 0,                                  // DHCP enabled or not
-                (byte)192,(byte)168,0,10,           // Default IP address
-                (byte)255,(byte)255,(byte)255,0,    // Default Netmask
-                (byte)192,(byte)168,0,1,            // Default gateway
-                80,0                                // Webserver port
+                (byte) 192, (byte) 168, 0, 10,           // Default IP address
+                (byte) 255, (byte) 255, (byte) 255, 0,    // Default Netmask
+                (byte) 192, (byte) 168, 0, 1,            // Default gateway
+                80, 0                                // Webserver port
         };
     }
 
@@ -62,7 +63,7 @@ public class EspUserData {
         }
 
         // Copy data to stream buffer
-        for (int i=0;i<data.length;i++) {
+        for (int i = 0; i < data.length; i++) {
             streamArray[wptr++] = data[i];
         }
     }
@@ -85,7 +86,7 @@ public class EspUserData {
         }
 
         for (int i = 0; i < 4; i++) {
-            ip[i] = (byte)Integer.parseInt(parts[i]);
+            ip[i] = (byte) Integer.parseInt(parts[i]);
         }
 
         return ip;
@@ -120,11 +121,11 @@ public class EspUserData {
         byte[] port = new byte[2];
 
         // Read out values from gui, starting with the system name
-        et = (EditText)activity.findViewById(R.id.espSystemName);
+        et = (EditText) activity.findViewById(R.id.espSystemName);
         device = getDevice(et.getText().toString());
 
         // DHCP enabled
-        cb = (CheckBox)activity.findViewById(R.id.espEnableDhcp);
+        cb = (CheckBox) activity.findViewById(R.id.espEnableDhcp);
         if (cb.isChecked() == true) {
             dhcpEnabled[0] = 1;
         } else {
@@ -132,7 +133,7 @@ public class EspUserData {
         }
 
         // IP Address
-        et = (EditText)activity.findViewById(R.id.espIpAddress);
+        et = (EditText) activity.findViewById(R.id.espIpAddress);
         try {
             ip = ipToArray(et.getText().toString());
         } catch (ArithmeticException e) {
@@ -142,7 +143,7 @@ public class EspUserData {
         }
 
         // Netmask
-        et = (EditText)activity.findViewById(R.id.espNetmask);
+        et = (EditText) activity.findViewById(R.id.espNetmask);
         try {
             netmask = ipToArray(et.getText().toString());
         } catch (ArithmeticException e) {
@@ -152,7 +153,7 @@ public class EspUserData {
         }
 
         // Default gateway
-        et = (EditText)activity.findViewById(R.id.espGateway);
+        et = (EditText) activity.findViewById(R.id.espGateway);
         try {
             gateway = ipToArray(et.getText().toString());
         } catch (ArithmeticException e) {
@@ -162,10 +163,10 @@ public class EspUserData {
         }
 
         // Webserver port
-        et = (EditText)activity.findViewById(R.id.espWebServerport);
+        et = (EditText) activity.findViewById(R.id.espWebServerport);
         imPort = Integer.parseInt(et.getText().toString());
-        port[0] = (byte)(imPort & 255);
-        port[1] = (byte)((imPort / 256) & 255);
+        port[0] = (byte) (imPort & 255);
+        port[1] = (byte) ((imPort / 256) & 255);
 
         // Create a new payload stream
         streamCreate();
@@ -178,7 +179,7 @@ public class EspUserData {
         streamData(port);
     }
 
-    public void enableDisableAddresses(Activity activity, boolean checked) {
+    private void enableDisableAddresses(Activity activity, boolean checked) {
 
         Log.d(TAG, "Setting setEnabled to " + checked);
         // Enable or disable text fields accordingly.
@@ -213,11 +214,11 @@ public class EspUserData {
         EditText et;
 
         // system name
-        et = (EditText)activity.findViewById(R.id.espSystemName);
+        et = (EditText) activity.findViewById(R.id.espSystemName);
         et.setText(this.getDeviceString(payload[0]));
 
         // DHCP Switch
-        CheckBox cb = (CheckBox)activity.findViewById(R.id.espEnableDhcp);
+        CheckBox cb = (CheckBox) activity.findViewById(R.id.espEnableDhcp);
         if (payload[1] != 0) {
             cb.setChecked(true);
             enableDisableAddresses(activity, false);
@@ -235,7 +236,7 @@ public class EspUserData {
         ip += Integer.toString(getUnsignedByte(payload[4]));
         ip += ".";
         ip += Integer.toString(getUnsignedByte(payload[5]));
-        et = (EditText)activity.findViewById(R.id.espIpAddress);
+        et = (EditText) activity.findViewById(R.id.espIpAddress);
         et.setText(ip);
 
         // Netmask Address
@@ -247,7 +248,7 @@ public class EspUserData {
         nm += Integer.toString(getUnsignedByte(payload[8]));
         nm += ".";
         nm += Integer.toString(getUnsignedByte(payload[9]));
-        et = (EditText)activity.findViewById(R.id.espNetmask);
+        et = (EditText) activity.findViewById(R.id.espNetmask);
         et.setText(nm);
 
         // Default gateway
@@ -259,13 +260,13 @@ public class EspUserData {
         gw += Integer.toString(getUnsignedByte(payload[12]));
         gw += ".";
         gw += Integer.toString(getUnsignedByte(payload[13]));
-        et = (EditText)activity.findViewById(R.id.espGateway);
+        et = (EditText) activity.findViewById(R.id.espGateway);
         et.setText(gw);
 
         //  Webserver port
         int port = getUnsignedByte(payload[14]) |
                 getUnsignedByte(payload[15]) * 256;
-        et = (EditText)activity.findViewById(R.id.espWebServerport);
+        et = (EditText) activity.findViewById(R.id.espWebServerport);
         et.setText(Integer.toString(port));
     }
 
