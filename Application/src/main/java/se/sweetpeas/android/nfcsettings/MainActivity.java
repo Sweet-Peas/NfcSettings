@@ -183,6 +183,8 @@ public class MainActivity extends ActionBarActivity
                         }
                     }
                 }
+                // Make sure the user can use the update button.
+                actionMenuEnabled = true;
                 break;
 
             case OP_WRITE:
@@ -361,7 +363,8 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
+        Log.d(TAG, "Entering the onFragmentInteraction method !");
+        actionMenuEnabled = false;
     }
 
     /**
